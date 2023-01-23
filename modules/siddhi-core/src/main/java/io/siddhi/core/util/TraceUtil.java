@@ -6,7 +6,7 @@ import org.javatuples.Triplet;
 public class TraceUtil {
     public static Stack<Triplet<Long, String, Long>> traceStack = new Stack<Triplet<Long, String, Long>>();
 
-    public static void addTrace(Long id, String message, Long time) {
-        traceStack.push(new Triplet<Long, String, Long>(id, message, time));
+    public static void addTrace(Long id, Long time) {
+        traceStack.push(new Triplet<Long, String, Long>(id, Thread.currentThread().getStackTrace()[2].toString(), time));
     }
 }

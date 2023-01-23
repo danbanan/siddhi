@@ -77,21 +77,23 @@ public class ProcessStreamReceiver implements StreamJunction.Receiver {
         if (lockWrapper != null) {
             lockWrapper.lock();
         }
+        long event_id = streamEventChunk.getFirst().getTimestamp();
         try {
             LatencyTracker latencyTracker = siddhiQueryContext.getLatencyTracker();
             if (Level.BASIC.compareTo(siddhiQueryContext.getSiddhiAppContext().getRootMetricsLevel()) <= 0 &&
                     latencyTracker != null) {
                 try {
-                    // Here
                     latencyTracker.markIn();
                     processAndClear(streamEventChunk);
                 } finally {
                     latencyTracker.markOut();
                 }
             } else {
+                TraceUtil.addTrace(event_id, System.nanoTime());
                 processAndClear(streamEventChunk);
             }
         } finally {
+            TraceUtil.addTrace(event_id, System.nanoTime());
             if (lockWrapper != null) {
                 lockWrapper.unlock();
             }
@@ -178,9 +180,9 @@ public class ProcessStreamReceiver implements StreamJunction.Receiver {
             siddhiDebugger.checkBreakPoint(siddhiQueryContext.getName(),
                     SiddhiDebugger.QueryTerminal.IN, newEvent);
         }
-        TraceUtil.addTrace(timestamp, "ProcessStreamReceiver:receive:before process call", System.nanoTime());
+        TraceUtil.addTrace(timestamp, System.nanoTime());
         process(new ComplexEventChunk<StreamEvent>(newEvent, newEvent));
-        TraceUtil.addTrace(timestamp, "ProcessStreamReceiver:receive:after process call", System.nanoTime());
+        TraceUtil.addTrace(timestamp, System.nanoTime());
     }
 
     protected void processAndClear(ComplexEventChunk<StreamEvent> streamEventChunk) {
