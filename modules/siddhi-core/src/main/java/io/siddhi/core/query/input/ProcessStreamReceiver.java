@@ -89,11 +89,11 @@ public class ProcessStreamReceiver implements StreamJunction.Receiver {
                     latencyTracker.markOut();
                 }
             } else {
-                TraceUtil.addTrace(event_id, System.nanoTime());
+                // TraceUtil.addTrace(event_id, System.nanoTime());
                 processAndClear(streamEventChunk);
             }
         } finally {
-            TraceUtil.addTrace(event_id, System.nanoTime());
+            // TraceUtil.addTrace(event_id, System.nanoTime());
             if (lockWrapper != null) {
                 lockWrapper.unlock();
             }
@@ -180,9 +180,9 @@ public class ProcessStreamReceiver implements StreamJunction.Receiver {
             siddhiDebugger.checkBreakPoint(siddhiQueryContext.getName(),
                     SiddhiDebugger.QueryTerminal.IN, newEvent);
         }
-        TraceUtil.addTrace(timestamp, System.nanoTime());
+        // TraceUtil.addTrace(timestamp, System.nanoTime());
         process(new ComplexEventChunk<StreamEvent>(newEvent, newEvent));
-        TraceUtil.addTrace(timestamp, System.nanoTime());
+        // TraceUtil.addTrace(timestamp, System.nanoTime());
     }
 
     protected void processAndClear(ComplexEventChunk<StreamEvent> streamEventChunk) {
